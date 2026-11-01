@@ -265,7 +265,14 @@ const _getQueryParam = (
 
   let encoded
 
-  if (!multiple && key && key.indexOf('%') === -1 && key.indexOf('+') === -1) {
+  if (
+    !multiple &&
+    key &&
+    key.indexOf('%') === -1 &&
+    key.indexOf('+') === -1 &&
+    key.indexOf('&') === -1 &&
+    key.indexOf('=') === -1
+  ) {
     // optimized for unencoded key
 
     const queryIndex = url.indexOf('?', 8)

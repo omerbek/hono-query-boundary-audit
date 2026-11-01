@@ -34,6 +34,20 @@ describe('Query', () => {
     expect(req.queries('item[]')).toEqual(['first', 'second'])
   })
 
+  test.each([
+    ['a&b=3', 'a&b'],
+    ['a=b=3', 'a=b'],
+    ['a%26b=3', 'a&b'],
+    ['a%3Db=3', 'a=b'],
+    ['a&b=3&a%26b=4', 'a&b'],
+    ['a=b=3&a%3Db=4', 'a=b'],
+  ])('query key %s observes query separators', (search, key) => {
+    const url = `http://localhost/?${search}`
+    const req = new HonoRequest(new Request(url))
+
+    expect(req.query(key)).toBe(new URL(url).searchParams.get(key) ?? undefined)
+  })
+
   test('decode special chars', () => {
     const rawRequest = new Request('http://localhost?mail=framework%40hono.dev&tag=%401&tag=%402')
     const req = new HonoRequest(rawRequest)
